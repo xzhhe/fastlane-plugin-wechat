@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.email         = 'zxcvb1234001@163.com'
 
   spec.summary       = 'this is a wechat api wrapper'
-  # spec.homepage      = "https://github.com/<GITHUB_USERNAME>/fastlane-plugin-wechat"
+  spec.homepage      = "https://github.com/xzhhe/fastlane-plugin-wechat"
   spec.license       = "MIT"
 
   spec.files         = Dir["lib/**/*"] + %w(README.md LICENSE)
