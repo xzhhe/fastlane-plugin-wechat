@@ -14,7 +14,11 @@ fastlane add_plugin wechat
 
 this is a wechat api wrapper
 
-**Note to author:** Add a more detailed description about this plugin here. If your plugin contains multiple actions, make sure to mention them here.
+通常在各种流程结束时， 需要将结果发送出去，比如 slack … 目前因公司内部全部迁移到 企业微信，所以需要使用 企业微信 的 api 封装下，完成下面的通知 ~
+
+![](images/Snip20190803_31.png)
+
+如果你也需要，参考下面目前支持的 消息类型.
 
 ## Example
 
