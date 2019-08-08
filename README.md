@@ -53,6 +53,16 @@ wechat(
 
 ![](images/Snip20190801_12.png)
 
+**has more style like this:**
+
+![](images/Snip20190808_1.png)
+
+-----------
+
+![](images/Snip20190808_2.png)
+
+
+
 ### 3. news 图文类型
 
 ```ruby
