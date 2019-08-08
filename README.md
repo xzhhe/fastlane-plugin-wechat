@@ -16,7 +16,21 @@ this is a wechat api wrapper
 
 通常在各种流程结束时， 需要将结果发送出去，比如 slack … 目前因公司内部全部迁移到 企业微信，所以需要使用 企业微信 的 api 封装下，完成下面的通知 ~
 
+### eg1
+
 ![](images/Snip20190803_31.png)
+
+### eg2
+
+![](images/Snip20190808_1.png)
+
+### eg3
+
+![](images/Snip20190808_2.png)
+
+### eg4
+
+![](images/Snip20190808_5.png)
 
 如果你也需要，参考下面目前支持的 消息类型.
 
@@ -52,16 +66,6 @@ wechat(
 ```
 
 ![](images/Snip20190801_12.png)
-
-**has more style like this:**
-
-![](images/Snip20190808_1.png)
-
------------
-
-![](images/Snip20190808_2.png)
-
-
 
 ### 3. news 图文类型
 
