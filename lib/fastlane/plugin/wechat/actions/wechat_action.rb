@@ -4,34 +4,88 @@ require_relative '../helper/wechat_helper'
 module Fastlane
   module Actions
     class WechatAction < Action
+      require 'net/http'
       require 'net/https'
       require 'json'
 
       def self.run(params)
-        access_token = params[:access_token]
+        if params[:webhook]
+          send_with_webhook(params)
+        else
+          send_with_token(params)
+        end
+      end
+
+      def self.send_with_webhook(params = {})
+        msgtype = params[:msgtype]
+        text = params[:text]
+
+        url = URI(params[:webhook])
+        http = Net::HTTP.new(url.host, url.port)
+        http.use_ssl = true if url.scheme == 'https'
+
+        request = Net::HTTP::Post.new(url)
+        request["Content-Type"] = 'application/json'
+        request.body = http_body(params)
+        
+        puts http.request(request).body
+      end
+
+      def self.send_with_token(params = {})
         access_token_url = params[:access_token_url]
         agentid = params[:agentid]
         secret = params[:secret]
-        recievers = params[:recievers]
         send_message_url = params[:send_message_url]
-        msgtype = params[:msgtype]
-        text = params[:text]
-        articles = params[:articles]
-
-        unless access_token
-          access_token = request_access_token(access_token_url, agentid, secret)
-          UI.important "[WechatAction] request access_token: #{access_token}"
-        end
+        
+        access_token = request_access_token(access_token_url, agentid, secret)
+        UI.important "[WechatAction] request access_token: #{access_token}"
 
         msg_uri = URI(send_message_url)
+        http = Net::HTTP.new(msg_uri.host, msg_uri.port)
+        http.use_ssl = true if msg_uri.scheme == 'https'
+
         headers = {
           'token' => access_token,
           'agentid' => agentid,
           'Content-Type' => 'application/json'
         }
+
+        request = Net::HTTP::Post.new(msg_uri, headers)
+        request.body = http_body(params)
+        puts http.request(request).body
+      end
+
+      def self.request_access_token(url, agentid, secret)
+        token_uri = URI(url)
+
+        http = Net::HTTP.new(token_uri.host, token_uri.port)
+        http.use_ssl = true if token_uri.scheme == 'https'
+
+        request = Net::HTTP::Get.new(token_uri)
+        request['agentid'] = agentid.to_s
+        request['secret'] = secret.to_s
+
+        # resp = Net::HTTP.start(token_uri.hostname, token_uri.port) do |http|
+        #   http.request(request)
+        # end
+        # JSON.parse(resp.body)["access_token"]
+
+        resp = http.request(request)
+        JSON.parse(resp.body)["access_token"]
+      end
+
+      def self.http_body(params = {})
+        recievers = params[:recievers]
+        msgtype = params[:msgtype]
+        text = params[:text]
+        articles = params[:articles]
+
         body = {}
-        body['touser'] = recievers.join('|')
         body['msgtype'] = msgtype
+
+        unless params[:webhook]
+          body['touser'] = recievers.join('|')
+        end
 
         # 1、文本类型
         # {
@@ -63,7 +117,6 @@ module Fastlane
             "content" => text
           }
         end
-
 
         # 3、图片类型
         # {
@@ -99,23 +152,7 @@ module Fastlane
           }
         end
 
-        # UI.success(body)
-        req = Net::HTTP::Post.new(msg_uri, headers)
-        req.body = body.to_json
-        Net::HTTP.new(msg_uri.host, msg_uri.port).start do |http|
-          http.request(req)
-        end
-      end
-
-      def self.request_access_token(url, agentid, secret)
-        token_uri = URI(url)
-        req = Net::HTTP::Get.new(token_uri)
-        req['agentid'] = agentid.to_s
-        req['secret'] = secret.to_s
-        res = Net::HTTP.start(token_uri.hostname, token_uri.port) do |http|
-          http.request(req)
-        end
-        JSON.parse(res.body)["access_token"]
+        body.to_json
       end
 
       def self.description
@@ -133,7 +170,7 @@ module Fastlane
       def self.available_options
         [
           FastlaneCore::ConfigItem.new(
-            key: :access_token,
+            key: :webhook,
             description: "wechat access token",
             type: String,
             optional: true,
@@ -161,7 +198,7 @@ module Fastlane
             key: :recievers,
             description: "how many man to receive this message",
             type: Array,
-            optional: false
+            optional: true
           ),
           FastlaneCore::ConfigItem.new(
             key: :text,
