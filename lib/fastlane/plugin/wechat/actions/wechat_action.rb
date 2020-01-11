@@ -10,9 +10,9 @@ module Fastlane
 
       def self.run(params)
         if params[:webhook]
-          send_with_webhook(params)
+          retry_times(3) { send_with_webhook(params) }
         else
-          send_with_token(params)
+          retry_times(3) { send_with_token(params) }
         end
       end
 
@@ -27,7 +27,7 @@ module Fastlane
         request = Net::HTTP::Post.new(url)
         request["Content-Type"] = 'application/json'
         request.body = http_body(params)
-        
+
         puts http.request(request).body
       end
 
@@ -36,7 +36,7 @@ module Fastlane
         agentid = params[:agentid]
         secret = params[:secret]
         send_message_url = params[:send_message_url]
-        
+
         access_token = request_access_token(access_token_url, agentid, secret)
         UI.important "[WechatAction] request access_token: #{access_token}"
 
@@ -153,6 +153,23 @@ module Fastlane
         end
 
         body.to_json
+      end
+
+      def self.retry_times(times, &block)
+        tries = 1
+        begin
+          block.call
+        rescue Exception => e
+          tries += 1
+          retry if tries <= times
+
+          puts "❌ Over #{times} times failed"
+          puts "❗️ Exception messgae:"
+          puts e.class
+          puts e.message
+          puts "❗️ Exception backtrace:"
+          puts e.backtrace.inspect
+        end
       end
 
       def self.description
