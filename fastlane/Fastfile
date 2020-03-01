@@ -1,26 +1,26 @@
 lane :test1 do
   wechat(
-    access_token_url: 'http://smsc.in.zhihu.com/token',
+    access_token_url: 'http://smsc.in.xxx.com/token',
     agentid: '10024',
     secret: 'dccae6ea9369a64d5131cfcf0e75a045',
     recievers: ['xiongzenghui'],
     msgtype: 'text',
     text: "我是短信 ~",
-    send_message_url: "http://smsc.in.zhihu.com/message/send?userid=xiongzenghui"
+    send_message_url: "http://smsc.in.xxx.com/message/send?userid=xiongzenghui"
   )
 
   wechat(
-    access_token_url: 'http://smsc.in.zhihu.com/token',
+    access_token_url: 'http://smsc.in.xxx.com/token',
     agentid: '10024',
     secret: 'dccae6ea9369a64d5131cfcf0e75a045',
     recievers: ['xiongzenghui'],
     msgtype: 'markdown',
     text: "实时新增用户反馈<font color=\"warning\">132例</font>，请相关同事注意.\n >类型:<font color=\"comment\">用户反馈</font>\n >普通用户反馈:<font color=\"comment\">117例</font>\n >VIP用户反馈:<font color=\"comment\">15例</font>",
-    send_message_url: "http://smsc.in.zhihu.com/message/send?userid=xiongzenghui"
+    send_message_url: "http://smsc.in.xxx.com/message/send?userid=xiongzenghui"
   )
 
   wechat(
-    access_token_url: 'http://smsc.in.zhihu.com/token',
+    access_token_url: 'http://smsc.in.xxx.com/token',
     agentid: '10024',
     secret: 'dccae6ea9369a64d5131cfcf0e75a045',
     recievers: ['xiongzenghui'],
@@ -31,7 +31,7 @@ lane :test1 do
       "url" => "http://res.mail.qq.com/node/ww/wwopenmng/images/independent/doc/test_pic_msg1.png",
       "picurl" => "http://res.mail.qq.com/node/ww/wwopenmng/images/independent/doc/test_pic_msg1.png"
     }],
-    send_message_url: "http://smsc.in.zhihu.com/message/send?userid=xiongzenghui"
+    send_message_url: "http://smsc.in.xxx.com/message/send?userid=xiongzenghui"
   )
 end
 
@@ -40,14 +40,14 @@ lane :test2 do
   #   webhook: 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=bd1e56d7-d034-466a-89dc-8c4102b310ff',
   #   msgtype: 'text',
   #   text: "我是短信 ~",
-  #   send_message_url: "http://smsc.in.zhihu.com/message/send?userid=xiongzenghui"
+  #   send_message_url: "http://smsc.in.xxx.com/message/send?userid=xiongzenghui"
   # )
 
   wechat(
     webhook: 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=bd1e56d7-d034-466a-89dc-8c4102b310ff',
     msgtype: 'markdown',
     text: "实时新增用户反馈<font color=\"warning\">132例</font>，请相关同事注意.\n >类型:<font color=\"comment\">用户反馈</font>\n >普通用户反馈:<font color=\"comment\">117例</font>\n >VIP用户反馈:<font color=\"comment\">15例</font>",
-    send_message_url: "http://smsc.in.zhihu.com/message/send?userid=xiongzenghui"
+    send_message_url: "http://smsc.in.xxx.com/message/send?userid=xiongzenghui"
   )
 
   wechat(
@@ -59,6 +59,6 @@ lane :test2 do
       "url" => "http://res.mail.qq.com/node/ww/wwopenmng/images/independent/doc/test_pic_msg1.png",
       "picurl" => "http://res.mail.qq.com/node/ww/wwopenmng/images/independent/doc/test_pic_msg1.png"
     }],
-    send_message_url: "http://smsc.in.zhihu.com/message/send?userid=xiongzenghui"
+    send_message_url: "http://smsc.in.xxx.com/message/send?userid=xiongzenghui"
   )
 end
