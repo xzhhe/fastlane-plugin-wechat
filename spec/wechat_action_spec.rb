@@ -10,7 +10,7 @@ describe Fastlane::Actions::WechatAction do
 
     it 'http_body - text' do
       pp Fastlane::Actions::WechatAction.http_body(
-        recievers: ['xiongzenghui'],
+        receivers: ['xiongzenghui'],
         msgtype: 'text',
         text: "haha ~"
       )
@@ -18,7 +18,7 @@ describe Fastlane::Actions::WechatAction do
 
     it 'http_body - mardown' do
       pp Fastlane::Actions::WechatAction.http_body(
-        recievers: ['xiongzenghui'],
+        receivers: ['xiongzenghui'],
         msgtype: 'markdown',
         text: "## ✅ build success \n \n> 1. ........ \n> 2. .......... \n> 3. ........"
       )
@@ -27,7 +27,7 @@ describe Fastlane::Actions::WechatAction do
     it 'http_body - text - webhook' do
       pp Fastlane::Actions::WechatAction.http_body(
         webhook: 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=xxxxxxxxx',
-        recievers: ['xiongzenghui'],
+        receivers: ['xiongzenghui'],
         msgtype: 'text',
         text: "haha ~"
       )
@@ -36,7 +36,7 @@ describe Fastlane::Actions::WechatAction do
     it 'http_body - mardown - webhook' do
       pp Fastlane::Actions::WechatAction.http_body(
         webhook: 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=xxxxxxxxx',
-        recievers: ['xiongzenghui'],
+        receivers: ['xiongzenghui'],
         msgtype: 'markdown',
         text: "## ✅ build success \n \n> 1. ........ \n> 2. .......... \n> 3. ........"
       )
@@ -47,7 +47,7 @@ describe Fastlane::Actions::WechatAction do
         access_token_url: 'http://smsc.in.xxx.com/token',
         agentid: '10024',
         secret: 'dccae6ea9369a64d5131cfcf0e75a045',
-        recievers: ['xiongzenghui'],
+        receivers: ['xiongzenghui'],
         msgtype: 'text',
         text: "xxxxxxxxxx",
         send_message_url: "http://smsc.in.xxx.com/message/send?userid=xiongzenghui"
@@ -59,7 +59,7 @@ describe Fastlane::Actions::WechatAction do
         access_token_url: 'http://smsc.in.xxx.com/token',
         agentid: '10024',
         secret: 'dccae6ea9369a64d5131cfcf0e75a045',
-        recievers: ['xiongzenghui'],
+        receivers: ['xiongzenghui'],
         msgtype: 'markdown',
         text: "实时新增用户反馈<font color=\"warning\">132例</font>，请相关同事注意.\n >类型:<font color=\"comment\">用户反馈</font>\n >普通用户反馈:<font color=\"comment\">117例</font>\n >VIP用户反馈:<font color=\"comment\">15例</font>",
         send_message_url: "http://smsc.in.xxx.com/message/send?userid=xiongzenghui"
@@ -87,7 +87,7 @@ describe Fastlane::Actions::WechatAction do
         access_token_url: 'http://smsc.in.xxx.com/token',
         agentid: '10024',
         secret: 'dccae6ea9369a64d5131cfcf0e75a045',
-        recievers: ['xiongzenghui'],
+        receivers: ['xiongzenghui'],
         msgtype: 'text',
         text: "xxxxxxxxxx",
         send_message_url: "http://smsc.in.xxx.com/message/send?userid=xiongzenghui"
@@ -99,7 +99,7 @@ describe Fastlane::Actions::WechatAction do
         access_token_url: 'http://smsc.in.xxx.com/token',
         agentid: '10024',
         secret: 'dccae6ea9369a64d5131cfcf0e75a045',
-        recievers: ['xiongzenghui'],
+        receivers: ['xiongzenghui'],
         msgtype: 'markdown',
         text: "实时新增用户反馈<font color=\"warning\">132例</font>，请相关同事注意.\n >类型:<font color=\"comment\">用户反馈</font>\n >普通用户反馈:<font color=\"comment\">117例</font>\n >VIP用户反馈:<font color=\"comment\">15例</font>",
         send_message_url: "http://smsc.in.xxx.com/message/send?userid=xiongzenghui"

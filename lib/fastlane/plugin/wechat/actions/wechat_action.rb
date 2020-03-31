@@ -75,7 +75,7 @@ module Fastlane
       end
 
       def self.http_body(params = {})
-        recievers = params[:recievers]
+        receivers = params[:receivers]
         mentioned_list = params[:mentioned_list]
         msgtype = params[:msgtype]
         text = params[:text]
@@ -85,7 +85,7 @@ module Fastlane
         body['msgtype'] = msgtype
 
         unless params[:webhook]
-          body['touser'] = recievers.join('|')
+          body['touser'] = receivers.join('|')
         end
 
         # 1、文本类型
@@ -217,7 +217,7 @@ module Fastlane
             optional: true
           ),
           FastlaneCore::ConfigItem.new(
-            key: :recievers,
+            key: :receivers,
             description: "how many man to receive this message",
             type: Array,
             optional: true

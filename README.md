@@ -42,7 +42,7 @@ this is a wechat api wrapper
 wechat(
   access_token: 'your wechat api token', # 注意: 这个 token 必须每次重新请求获取, 不能长时间使用
   agentid: 'your wechat api agentid',
-  recievers: ['xiongzenghui'],
+  receivers: ['xiongzenghui'],
   msgtype: 'text',
   text: 'welcome to fastlane ~',
   send_message_url: "http://smsc.in.xxx.com/message/send?userid=wangfei"
@@ -58,7 +58,7 @@ wechat(
   access_token_url: 'http://smsc.in.xxx.com/token',
   agentid: 'your wechat api agentid',
   secret: 'your wechat api secret',
-  recievers: ['xiongzenghui'],
+  receivers: ['xiongzenghui'],
   msgtype: 'markdown',
   text: "实时新增用户反馈<font color=\"warning\">132例</font>，请相关同事注意.\n >类型:<font color=\"comment\">用户反馈</font>\n >普通用户反馈:<font color=\"comment\">117例</font>\n >VIP用户反馈:<font color=\"comment\">15例</font>",
   send_message_url: "http://smsc.in.xxx.com/message/send?userid=xiongzenghui"
@@ -74,7 +74,7 @@ wechat(
   access_token_url: 'http://smsc.in.xxx.com/token',
   agentid: 'your wechat api agentid',
   secret: 'your wechat api secret',
-  recievers: ['xiongzenghui'],
+  receivers: ['xiongzenghui'],
   msgtype: 'news',
   articles: [{
     "title" => "中秋节礼品领取",
