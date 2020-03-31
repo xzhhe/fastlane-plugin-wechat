@@ -76,6 +76,7 @@ module Fastlane
 
       def self.http_body(params = {})
         recievers = params[:recievers]
+        mentioned_list = params[:mentioned_list]
         msgtype = params[:msgtype]
         text = params[:text]
         articles = params[:articles]
@@ -98,7 +99,8 @@ module Fastlane
         # }
         if msgtype == 'text'
           body['text'] = {
-            'content' => text
+            'content' => text,
+            'mentioned_list' => mentioned_list
           }
         end
 
@@ -114,7 +116,8 @@ module Fastlane
         # }
         if msgtype == 'markdown'
           body['markdown'] = {
-            "content" => text
+            "content" => text,
+            'mentioned_list' => mentioned_list
           }
         end
 
@@ -128,7 +131,8 @@ module Fastlane
         # }
         if msgtype == 'image'
           body['image'] = {
-            'content' => text
+            'content' => text,
+            'mentioned_list' => mentioned_list
           }
         end
 
@@ -148,7 +152,8 @@ module Fastlane
         # }
         if msgtype == 'news'
           body['news'] = {
-            'articles' => articles
+            'articles' => articles,
+            'mentioned_list' => mentioned_list
           }
         end
 
@@ -214,6 +219,12 @@ module Fastlane
           FastlaneCore::ConfigItem.new(
             key: :recievers,
             description: "how many man to receive this message",
+            type: Array,
+            optional: true
+          ),
+          FastlaneCore::ConfigItem.new(
+            key: :mentioned_list,
+            description: "mentioned_list",
             type: Array,
             optional: true
           ),
