@@ -16,38 +16,39 @@ module Fastlane
         end
       end
 
-      def self.send_with_webhook(params = {})
-        msgtype = params[:msgtype]
-        text = params[:text]
+      def self.send_with_webhook(params)
+        webhook = params[:webhook]
+        agentid = params[:agentid]
 
-        url = URI(params[:webhook])
+        url = URI(webhook)
         http = Net::HTTP.new(url.host, url.port)
         http.use_ssl = true if url.scheme == 'https'
 
-        request = Net::HTTP::Post.new(url)
-        request["Content-Type"] = 'application/json'
-        request.body = http_body(params)
+        headers = { 'Content-Type' => 'application/json' }
+        headers['agentid'] = agentid if agentid
+        request = Net::HTTP::Post.new(url, headers)
 
+        request.body = http_body(params)
         puts http.request(request).body
       end
 
-      def self.send_with_token(params = {})
+      def self.send_with_token(params)
         access_token_url = params[:access_token_url]
-        agentid = params[:agentid]
         secret = params[:secret]
+        agentid = params[:agentid]
         send_message_url = params[:send_message_url]
 
         access_token = request_access_token(access_token_url, agentid, secret)
-        UI.important "[WechatAction] request access_token: #{access_token}"
+        UI.important "[WechatAction] access_token: #{access_token}"
 
         msg_uri = URI(send_message_url)
         http = Net::HTTP.new(msg_uri.host, msg_uri.port)
         http.use_ssl = true if msg_uri.scheme == 'https'
 
         headers = {
+          'Content-Type' => 'application/json',
           'token' => access_token,
-          'agentid' => agentid,
-          'Content-Type' => 'application/json'
+          'agentid' => agentid
         }
 
         request = Net::HTTP::Post.new(msg_uri, headers)
@@ -55,38 +56,15 @@ module Fastlane
         puts http.request(request).body
       end
 
-      def self.request_access_token(url, agentid, secret)
-        token_uri = URI(url)
-
-        http = Net::HTTP.new(token_uri.host, token_uri.port)
-        http.use_ssl = true if token_uri.scheme == 'https'
-
-        request = Net::HTTP::Get.new(token_uri)
-        request['agentid'] = agentid.to_s
-        request['secret'] = secret.to_s
-
-        # resp = Net::HTTP.start(token_uri.hostname, token_uri.port) do |http|
-        #   http.request(request)
-        # end
-        # JSON.parse(resp.body)["access_token"]
-
-        resp = http.request(request)
-        JSON.parse(resp.body)["access_token"]
-      end
-
-      def self.http_body(params = {})
-        receivers = params[:receivers]
-        mentioned_list = params[:mentioned_list]
+      def self.http_body(params)
         msgtype = params[:msgtype]
-        text = params[:text]
-        articles = params[:articles]
+        msgcontent = params[:msgcontent]
+        touser = params[:touser]
+        mentioned_list = params[:mentioned_list]
 
         body = {}
         body['msgtype'] = msgtype
-
-        unless params[:webhook]
-          body['touser'] = receivers.join('|')
-        end
+        body['touser'] = touser.join('|') if touser
 
         # 1、文本类型
         # {
@@ -98,27 +76,46 @@ module Fastlane
         #   }
         # }
         if msgtype == 'text'
-          body['text'] = {
-            'content' => text,
-            'mentioned_list' => mentioned_list
-          }
+          text = { 'content' => msgcontent }
+          text['mentioned_list'] = mentioned_list if mentioned_list
+
+          body['text'] = text
         end
 
         # 2、markdown类型
         # {
+        #   "touser": ["userid1", "userid2", "CorpId1/userid1", "CorpId2/userid2"],
+        #   "toparty": ["partyid1", "partyid2", "LinkedId1/partyid1", "LinkedId2/partyid2"],
+        #   "totag": ["tagid1", "tagid2"],
+        #   "toall": 0,
         #   "msgtype": "markdown",
+        #   "agentid": 1,
         #   "markdown": {
-        #     "content": "实时新增用户反馈<font color=\"warning\">132例</font>，请相关同事注意。\n
-        #       >类型:<font color=\"comment\">用户反馈</font> \n
-        #       >普通用户反馈:<font color=\"comment\">117例</font> \n
-        #       >VIP用户反馈:<font color=\"comment\">15例</font>"
+        #     "content": "您的会议室已经预定，稍后会同步到`邮箱` >
+        #       ** 事项详情 **
+        #       >
+        #       事　 项： < font color = \"info\">开会</font> >
+        #       组织者： @miglioguan >
+        #       参与者： @miglioguan、 @kunliu、 @jamdeezhou、 @kanexiong、 @kisonwang >
+        #       >
+        #       会议室： < font color = \"info\">广州TIT 1楼 301</font> >
+        #       日　 期： < font color = \"warning\">2018年5月18日</font> >
+        #       时　 间： < font color = \"comment\">上午9:00-11:00</font> >
+        #       >
+        #       请准时参加会议。 >
+        #       >
+        #       如需修改会议信息， 请点击：[修改会议信息](https: //work.weixin.qq.com)"
         #   }
         # }
         if msgtype == 'markdown'
-          body['markdown'] = {
-            "content" => text,
-            'mentioned_list' => mentioned_list
-          }
+          markdown = {}
+          if mentioned_list
+            m_mentioned_list = mentioned_list.map {|e| "@#{e.strip}"}.join(", ")
+            msgcontent.concat("\n#{m_mentioned_list}")
+          end
+          markdown['content'] = msgcontent
+
+          body['markdown'] = markdown
         end
 
         # 3、图片类型
@@ -130,10 +127,10 @@ module Fastlane
         #   }
         # }
         if msgtype == 'image'
-          body['image'] = {
-            'content' => text,
-            'mentioned_list' => mentioned_list
-          }
+          image = { 'content' => msgcontent }
+          image['mentioned_list'] = mentioned_list if mentioned_list
+
+          body['image'] = image
         end
 
         # 4、图文类型
@@ -151,13 +148,28 @@ module Fastlane
         #   }
         # }
         if msgtype == 'news'
-          body['news'] = {
-            'articles' => articles,
-            'mentioned_list' => mentioned_list
-          }
+          articles = params[:articles]
+          news = { 'articles' => articles }
+          news['mentioned_list'] = mentioned_list if mentioned_list
+
+          body['news'] = news
         end
 
         body.to_json
+      end
+
+      def self.request_access_token(url, agent_id, secret)
+        token_uri = URI(url)
+
+        http = Net::HTTP.new(token_uri.host, token_uri.port)
+        http.use_ssl = true if token_uri.scheme == 'https'
+
+        request = Net::HTTP::Get.new(token_uri)
+        request['agentid'] = agent_id.to_s
+        request['secret'] = secret.to_s
+
+        resp = http.request(request)
+        JSON.parse(resp.body)["access_token"]
       end
 
       def self.retry_times(times, &block)
@@ -217,7 +229,7 @@ module Fastlane
             optional: true
           ),
           FastlaneCore::ConfigItem.new(
-            key: :receivers,
+            key: :touser,
             description: "how many man to receive this message",
             type: Array,
             optional: true
@@ -229,10 +241,17 @@ module Fastlane
             optional: true
           ),
           FastlaneCore::ConfigItem.new(
-            key: :text,
+            key: :msgcontent,
             description: "wechat message text",
             type: String,
             optional: true,
+          ),
+          FastlaneCore::ConfigItem.new(
+            key: :articles,
+            description: "news articles",
+            type: Array,
+            optional: true,
+            conflicting_options: [:msgcontent]
           ),
           FastlaneCore::ConfigItem.new(
             key: :msgtype,
@@ -245,13 +264,6 @@ module Fastlane
             description: "send message to wechat server api url",
             type: String,
             optional: false
-          ),
-          FastlaneCore::ConfigItem.new(
-            key: :articles,
-            description: "news articles",
-            type: Array,
-            optional: true,
-            conflicting_options: [:text]
           )
         ]
       end
